@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aryan Pathania — Data Analyst & Data Scientist</title>
+<meta name="description" content="Portfolio of Aryan Pathania — Data Analyst & Data Scientist. SQL, Python, BI dashboards, forecasting, and machine learning." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Tailwind (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Chart.js for data viz -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  :root{
+    --bg:        #0b0f17;
+    --bg-2:      #0f1421;
+    --panel:     #131a28;
+    --panel-2:   #1a2236;
+    --border:    #1f2a40;
+    --grid:      #16203a;
+    --text:      #e6edf7;
+    --muted:     #8b9bb8;
+    --dim:       #5d6b87;
+    --accent:    #4ade80;   /* SQL green */
+    --accent-2:  #22d3ee;   /* data cyan */
+    --accent-3:  #f59e0b;   /* Excel orange */
+    --accent-4:  #a78bfa;   /* viz purple */
+    --danger:    #f87171;
+    --row-hover: #16213a;
+  }
+
+  /* Light Theme Variables */
+  html.light {
+    --bg:        #f8fafc;
+    --bg-2:      #f1f5f9;
+    --panel:     #ffffff;
+    --panel-2:   #f8fafc;
+    --border:    #e2e8f0;
+    --grid:      #e2e8f0;
+    --text:      #0f172a;
+    --muted:     #475569;
+    --dim:       #94a3b8;
+    --accent:    #059669;   /* darker green for contrast */
+    --accent-2:  #0891b2;
+    --accent-3:  #d97706;
+    --accent-4:  #7c3aed;
+    --danger:    #dc2626;
+    --row-hover: #f1f5f9;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .mono{ font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  /* Background grid + glow */
+  .bg-grid{
+    position: fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.9), rgba(0,0,0,0.2) 60%, transparent 100%);
+    opacity: .35;
+  }
+  .bg-glow{
+    position: fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(600px 400px at 12% 10%, rgba(74,222,128,0.10), transparent 60%),
+      radial-gradient(700px 500px at 90% 20%, rgba(34,211,238,0.08), transparent 60%),
+      radial-gradient(500px 400px at 60% 100%, rgba(167,139,250,0.08), transparent 60%);
+  }
+  html.light .bg-glow {
+    background:
+      radial-gradient(600px 400px at 12% 10%, rgba(5,150,105,0.05), transparent 60%),
+      radial-gradient(700px 500px at 90% 20%, rgba(8,145,178,0.05), transparent 60%);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-track{ background: var(--bg-2); }
+  ::-webkit-scrollbar-thumb{ background:#243150; border-radius:8px; }
+  ::-webkit-scrollbar-thumb:hover{ background:#33456e; }
+
+  /* Window chrome */
+  .window{
+    background: var(--panel);
+    border:1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px -20px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02) inset;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  html.light .window {
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+  }
+  .titlebar{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px;
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border-bottom:1px solid var(--border);
+  }
+  .dot{ width:11px; height:11px; border-radius:50%; flex-shrink: 0; }
+  .dot.r{ background:#ff5f57; }
+  .dot.y{ background:#febc2e; }
+  .dot.g{ background:#28c840; }
+  .titlebar .title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; color: var(--muted);
+    margin-left: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* SQL terminal */
+  .terminal{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 20px 22px;
+    color: var(--text);
+    min-height: 240px;
+    word-break: break-word; /* Fixes Safari overflow */
+    white-space: pre-wrap;  /* Ensures text wraps */
+  }
+  .kw{ color:#ff79c6; }      /* keyword pink */
+  .fn{ color:#50fa7b; }      /* function green */
+  .str{ color:#f1fa8c; }     /* string yellow */
+  .com{ color:var(--dim); font-style:italic; }
+  .id{ color:#8be9fd; }      /* identifier cyan */
+  .num{ color:#bd93f9; }     /* number purple */
+  html.light .kw { color: #d946ef; }
+  html.light .str { color: #ca8a04; }
+  html.light .num { color: #7c3aed; }
+  html.light .com { color: #64748b; }
+  
+  .cursor{
+    display:inline-block; width:9px; height:18px;
+    background: var(--accent);
+    vertical-align:-3px; margin-left:2px;
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity:0; } }
+
+  /* Tables */
+  table.data {
+    width:100%; border-collapse: collapse;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  table.data thead th{
+    text-align:left;
+    padding: 10px 14px;
+    background: var(--bg-2);
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+    font-weight:600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    font-size: 11px;
+    position: sticky; top:0;
+  }
+  table.data tbody td{
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+  }
+  table.data tbody tr{ transition: background .15s ease; }
+  table.data tbody tr:hover{ background: var(--row-hover); }
+  table.data tbody tr:last-child td{ border-bottom: none; }
+
+  /* Badges / chips */
+  .chip{
+    display:inline-flex; align-items:center; gap:6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .03em;
+    border:1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--muted);
+  }
+  .chip .pip{ width:6px; height:6px; border-radius:50%; }
+
+  /* Section heading */
+  .section-head{
+    display:flex; align-items:center; gap:14px;
+    margin-bottom: 24px;
+  }
+  .section-head .num{
+    font-family:'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .section-head h2{
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight:700;
+    letter-spacing:-.01em;
+    margin:0;
+  }
+  .section-head .line{
+    flex:1; height:1px; background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* Project card */
+  .project{
+    background: var(--panel);
+    border:1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    transition: border-color .2s ease, transform .2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .project::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    transform: scaleY(0); transform-origin: top;
+    transition: transform .35s ease;
+  }
+  .project:hover{ border-color:var(--accent-2); transform: translateY(-3px); }
+  .project:hover::before{ transform: scaleY(1); }
+  .project h3{ font-size:18px; margin:0 0 6px; }
+  .project .stack{ margin-top:14px; display:flex; flex-wrap:wrap; gap:6px; }
+  .project ul{ margin: 12px 0 0; padding-left: 18px; color: var(--muted); font-size:13px; line-height:1.7; }
+  .project ul li::marker{ color: var(--accent); }
+
+  /* Stat cards */
+  .stat{
+    background: var(--panel);
+    border:1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    position: relative;
+    overflow:hidden;
+    transition: border-color 0.2s ease;
+  }
+  .stat .v{ font-family:'JetBrains Mono', monospace; font-size:28px; font-weight:700; }
+  .stat .l{ font-size:12px; color: var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:4px; }
+
+  /* Nav */
+  .nav{
+    position: fixed; top: 18px; left:50%; transform: translateX(-50%);
+    z-index: 50;
+    display:flex; align-items:center; gap: 4px;
+    padding: 6px;
+    background: rgba(15,20,33,0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border:1px solid var(--border);
+    border-radius: 999px;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.6);
+    max-width: 95vw;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  html.light .nav {
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav { -ms-overflow-style: none; scrollbar-width: none; }
+  
+  .nav a, .nav button {
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 8px 14px;
+    border-radius: 999px;
+    text-decoration:none;
+    transition: color .15s, background .15s;
+    letter-spacing:.02em;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    flex-shrink: 0;
+  }
+  .nav a:hover, .nav button:hover{ color: var(--text); background: var(--row-hover); }
+  .nav a.active{ color: var(--bg); background: var(--accent); }
+
+  /* Buttons */
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 13px;
+    text-decoration:none;
+    transition: transform .15s, background .15s, border-color .15s;
+    border:1px solid var(--border);
+    cursor:pointer;
+  }
+  .btn-primary{ background: var(--accent); color:#06210f; border-color: transparent; font-weight:700; }
+  html.light .btn-primary { color: #ffffff; }
+  .btn-primary:hover{ transform: translateY(-2px); filter: brightness(1.1); }
+  .btn-ghost{ background: transparent; color: var(--text); }
+  .btn-ghost:hover{ background:var(--row-hover); border-color:var(--accent-2); }
+
+  /* Reveal animation */
+  .reveal{ opacity:0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* Query bar */
+  .query-bar{
+    display:flex; align-items:center; gap:10px;
+    padding: 10px 14px;
+    background:var(--bg-2);
+    border-bottom:1px solid var(--border);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .query-bar .run{
+    margin-left:auto;
+    background: var(--accent); color:#06210f;
+    padding: 4px 12px; border-radius:6px; font-weight:700; font-size:11px;
+    cursor:pointer; border:none;
+    transition: filter 0.15s;
+    flex-shrink: 0;
+  }
+  html.light .query-bar .run { color: #fff; }
+  .query-bar .run:hover{ filter: brightness(1.1); }
+
+  /* Hero name gradient */
+  .grad-text{
+    background: linear-gradient(120deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent-4) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Marquee */
+  .marquee{
+    overflow:hidden; white-space:nowrap;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    background: var(--bg-2);
+    padding: 10px 0;
+  }
+  .marquee-track{
+    display:inline-block; animation: scrollX 28s linear infinite;
+    font-family:'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--muted);
+  }
+  @keyframes scrollX { from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+  .marquee-track span{ margin: 0 24px; }
+  .marquee-track .sep{ color: var(--accent); }
+
+  /* Form Styles */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .form-input, .form-textarea {
+    width: 100%;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus, .form-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .form-textarea { resize: vertical; min-height: 100px; }
+  .form-status {
+    margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px;
+    border-radius: 6px;
+    display: none;
+  }
+  .form-status.success { display: block; background: rgba(74,222,128,0.1); color: var(--accent); border: 1px solid var(--accent); }
+  .form-status.error { display: block; background: rgba(248,113,113,0.1); color: var(--danger); border: 1px solid var(--danger); }
+
+  /* Responsive Skills Sheet */
+  .skills-row {
+    display: grid;
+    grid-template-columns: 40px 1fr 1fr 120px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .skills-row > div {
+    padding: 12px;
+    border-right: 1px solid var(--border);
+  }
+  .skills-row > div:last-child { border-right: none; }
+
+  @media (max-width: 768px) {
+    .skills-row {
+      grid-template-columns: 1fr;
+      padding: 16px;
+      gap: 8px;
+    }
+    .skills-row > div {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: 8px 0;
+    }
+    .skills-row > div:last-child { border-bottom: none; }
+    .hide-on-mobile { display: none; }
+  }
+
+  /* Print styles */
+  @media print {
+    .nav, .bg-grid, .bg-glow, .marquee, .no-print, .query-bar, .titlebar { display:none !important; }
+    body { background: #fff !important; color: #000 !important; }
+    .window { box-shadow: none !important; border: 1px solid #ccc !important; border-radius: 0 !important; background: #fff !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    section { padding: 10px 0 !important; page-break-inside: avoid; }
+    .grad-text { -webkit-text-fill-color: #000 !important; color: #000 !important; }
+    table.data thead th { background: #eee !important; color: #000 !important; border-bottom: 1px solid #000 !important; }
+    table.data tbody td { color: #000 !important; border-bottom: 1px solid #ccc !important; }
+    .chip, .btn { border: 1px solid #ccc !important; background: #fff !important; color: #000 !important; }
+    .stat { border: 1px solid #ccc !important; box-shadow: none !important; }
+    .project { border: 1px solid #ccc !important; box-shadow: none !important; }
+    .project::before { display: none !important; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- NAV -->
+<nav class="nav no-print" id="topnav">
+  <a href="#hero" data-sec="hero" class="active">~/home</a>
+  <a href="#about" data-sec="about">about</a>
+  <a href="#skills" data-sec="skills">skills</a>
+  <a href="#projects" data-sec="projects">projects</a>
+  <a href="#experience" data-sec="experience">timeline</a>
+  <a href="#contact" data-sec="contact">contact</a>
+  <button id="theme-toggle" title="Toggle Theme">🌙</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero" class="relative z-10 pt-32 pb-16 px-5">
+  <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-center">
+    
+    <div>
+      <div class="mono text-xs text-[color:var(--accent)] mb-4 flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-[color:var(--accent)] animate-pulse"></span>
+        SELECT * FROM developer WHERE status = 'open_to_work';
+      </div>
+      <h1 class="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight">
+        Aryan<br/><span class="grad-text">Pathania</span>
+      </h1>
+      <p class="mt-5 text-lg text-[color:var(--muted)] max-w-md">
+        Data Analyst &amp; Data Scientist turning messy rows into decisions —
+        forecasts, segments, and dashboards stakeholders actually use.
+      </p>
+
+      <div class="mt-6 flex flex-wrap gap-2">
+        <span class="chip"><span class="pip" style="background:var(--accent)"></span>Python</span>
+        <span class="chip"><span class="pip" style="background:var(--accent-2)"></span>SQL · MySQL</span>
+        <span class="chip"><span class="pip" style="background:var(--accent-3)"></span>Excel</span>
+        <span class="chip"><span class="pip" style="background:var(--accent-4)"></span>Tableau</span>
+        <span class="chip"><span class="pip" style="background:var(--accent)"></span>scikit-learn</span>
+        <span class="chip"><span class="pip" style="background:var(--accent-2)"></span>XGBoost</span>
+      </div>
+
+      <div class="mt-8 flex flex-wrap gap-3 no-print">
+        <a href="#contact" class="btn btn-primary">⟶ Run Connection Query</a>
+        <a href="#projects" class="btn btn-ghost">View Projects.sql</a>
+        <!-- ADDED PDF DOWNLOAD BUTTON HERE -->
+        <a href="Aryan_Pathania_Resume_DataAnalyst_DataScientist.pdf" download class="btn btn-ghost">⤓ Download Resume (PDF)</a>
+      </div>
+
+      <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-md">
+        <div class="stat"><div class="v">50K+</div><div class="l">Rows cleaned</div></div>
+        <div class="stat"><div class="v">89%</div><div class="l">Churn acc.</div></div>
+        <div class="stat"><div class="v">5%</div><div class="l">MAE vs rev.</div></div>
+        <div class="stat"><div class="v">0.91</div><div class="l">ROC-AUC</div></div>
+      </div>
+    </div>
+
+    <!-- Terminal window -->
+    <div class="window reveal">
+      <div class="titlebar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="title">aryan@portfolio: ~/profile.sql</span>
+      </div>
+      <div class="query-bar no-print">
+        <span style="color:var(--accent)">mysql&gt;</span>
+        <span id="query-text" style="color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">SELECT * FROM resume LIMIT 1;</span>
+        <button class="run" id="rerun-btn">▶ Run</button>
+      </div>
+      <div class="terminal" id="terminal"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee no-print">
+  <div class="marquee-track">
+    <span>SELECT * FROM projects</span><span class="sep">◆</span>
+    <span>WHERE accuracy &gt; 0.85</span><span class="sep">◆</span>
+    <span>GROUP BY domain</span><span class="sep">◆</span>
+    <span>ORDER BY impact DESC</span><span class="sep">◆</span>
+    <span>— 50,000+ rows processed</span><span class="sep">◆</span>
+    <span>89% churn accuracy</span><span class="sep">◆</span>
+    <span>5% forecasting MAE</span><span class="sep">◆</span>
+    <span>18% RMSE improvement</span><span class="sep">◆</span>
+    <span>SELECT * FROM projects</span><span class="sep">◆</span>
+    <span>WHERE accuracy &gt; 0.85</span><span class="sep">◆</span>
+    <span>GROUP BY domain</span><span class="sep">◆</span>
+    <span>ORDER BY impact DESC</span><span class="sep">◆</span>
+    <span>— 50,000+ rows processed</span><span class="sep">◆</span>
+    <span>89% churn accuracy</span><span class="sep">◆</span>
+    <span>5% forecasting MAE</span><span class="sep">◆</span>
+    <span>18% RMSE improvement</span><span class="sep">◆</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="relative z-10 py-20 px-5">
+  <div class="max-w-6xl mx-auto">
+    <div class="section-head reveal">
+      <span class="num">01 —</span>
+      <h2>About <span class="mono text-base text-[color:var(--muted)]">/ executive_summary</span></h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 window reveal">
+        <div class="titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">README.md</span>
+        </div>
+        <div class="p-6 md:p-8 text-[15px] leading-relaxed text-[color:var(--muted)]">
+          <p class="text-[color:var(--text)] text-lg mb-4">
+            Final-year B.Tech student in <span class="text-[color:var(--accent)]">Artificial Intelligence &amp; Data Science</span>
+            at CGC University, Mohali.
+          </p>
+          <p class="mb-4">
+            Hands-on across the full <span class="text-[color:var(--text)]">data-to-decision pipeline</span> — SQL/Python-based cleaning,
+            exploratory analysis, statistical modeling, and BI dashboarding on datasets up to
+            <span class="mono text-[color:var(--accent-3)]">50,000+</span> records.
+          </p>
+          <p>
+            Comfortable translating raw, messy data into forecasts, segment insights, and
+            stakeholder-ready visualizations. Seeking a full-time Data Analyst or Data Scientist role.
+          </p>
+
+          <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="stat">
+              <div class="l">Location</div>
+              <div class="mono text-sm text-[color:var(--text)] mt-1">Chandigarh, IN</div>
+            </div>
+            <div class="stat">
+              <div class="l">Status</div>
+              <div class="mono text-sm text-[color:var(--text)] mt-1">Open to Work</div>
+            </div>
+            <div class="stat">
+              <div class="l">Graduation</div>
+              <div class="mono text-sm text-[color:var(--text)] mt-1">2027 · Final Yr</div>
+            </div>
+            <div class="stat">
+              <div class="l">Focus</div>
+              <div class="mono text-sm text-[color:var(--text)] mt-1">ML · BI · SQL</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill radar -->
+      <div class="window reveal">
+        <div class="titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">skill_distribution.png</span>
+        </div>
+        <div class="p-4">
+          <canvas id="radarChart" height="280"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" class="relative z-10 py-20 px-5">
+  <div class="max-w-6xl mx-auto">
+    <div class="section-head reveal">
+      <span class="num">02 —</span>
+      <h2>Core Skills <span class="mono text-base text-[color:var(--muted)]">/ capabilities.csv</span></h2>
+      <span class="line"></span>
+    </div>
+
+    <!-- Excel-style sheet -->
+    <div class="window reveal">
+      <div class="titlebar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="title">skills.xlsx — Sheet1</span>
+      </div>
+      <div class="query-bar no-print">
+        <span style="color:var(--accent-3)">fx</span>
+        <span style="color:var(--text)">=SUMPRODUCT(capability, proficiency) / COUNTA(domain)</span>
+      </div>
+
+      <!-- Excel Column Headers (Hidden on mobile) -->
+      <div class="skills-row hide-on-mobile text-[11px] mono border-b border-[color:var(--border)] bg-[color:var(--bg-2)]">
+        <div class="text-[color:var(--dim)]">#</div>
+        <div class="text-[color:var(--accent)]">A · CATEGORY</div>
+        <div class="text-[color:var(--accent)]">B · TOOLS / SKILLS</div>
+        <div class="text-[color:var(--accent)]">C · LEVEL</div>
+      </div>
+
+      <div id="skills-sheet">
+        <!-- rows injected by JS -->
+      </div>
+    </div>
+
+    <!-- Quick viz: bar chart of skill distribution -->
+    <div class="grid md:grid-cols-2 gap-6 mt-8">
+      <div class="window reveal">
+        <div class="titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">tool_proficiency.csv — bar chart</span>
+        </div>
+        <div class="p-5">
+          <canvas id="barChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="window reveal">
+        <div class="titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">domain_breakdown.csv — doughnut</span>
+        </div>
+        <div class="p-5 flex items-center justify-center">
+          <canvas id="doughnutChart" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="relative z-10 py-20 px-5">
+  <div class="max-w-6xl mx-auto">
+    <div class="section-head reveal">
+      <span class="num">03 —</span>
+      <h2>Projects <span class="mono text-base text-[color:var(--muted)]">/ query_results</span></h2>
+      <span class="line"></span>
+    </div>
+
+    <!-- Query result as table -->
+    <div class="window reveal">
+      <div class="titlebar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="title">projects.db — 4 rows returned in 0.012s</span>
+      </div>
+      <div class="query-bar no-print">
+        <span style="color:var(--accent)">mysql&gt;</span>
+        <span style="color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">SELECT title, stack, dataset_size, metric, outcome FROM projects ORDER BY impact DESC;</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="data">
+          <thead>
+            <tr>
+              <th style="width:60px">id</th>
+              <th>title</th>
+              <th>stack</th>
+              <th>dataset</th>
+              <th>key_metric</th>
+              <th>outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="project-row" data-id="1">
+              <td style="color:var(--accent)">P-01</td>
+              <td><strong>Sales Forecasting &amp; BI Dashboard</strong></td>
+              <td>Python · SQL · Tableau</td>
+              <td>50,000+ txns</td>
+              <td>MAE &lt; 5%</td>
+              <td>Revenue planning support</td>
+            </tr>
+            <tr class="project-row" data-id="2">
+              <td style="color:var(--accent)">P-02</td>
+              <td><strong>Customer Churn Prediction</strong></td>
+              <td>Python · scikit-learn · XGBoost</td>
+              <td>7,000+ records</td>
+              <td>89% acc · 0.91 AUC</td>
+              <td>Churn-driver identification</td>
+            </tr>
+            <tr class="project-row" data-id="3">
+              <td style="color:var(--accent)">P-03</td>
+              <td><strong>House Price Prediction Platform</strong></td>
+              <td>Python · scikit-learn · Tableau</td>
+              <td>10,000+ records</td>
+              <td>RMSE −18%</td>
+              <td>Stakeholder dashboards</td>
+            </tr>
+            <tr class="project-row" data-id="4">
+              <td style="color:var(--accent)">P-04</td>
+              <td><strong>EDA Portfolio</strong></td>
+              <td>Pandas · Matplotlib · Seaborn</td>
+              <td>Public dataset</td>
+              <td>Reproducible</td>
+              <td>Pattern discovery &amp; GitHub</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Project detail cards -->
+    <div class="grid md:grid-cols-2 gap-6 mt-8">
+
+      <div class="project reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="mono text-xs text-[color:var(--accent)]">P-01 · FORECASTING</div>
+            <h3>Sales Forecasting &amp; Business Intelligence Dashboard</h3>
+          </div>
+          <span class="chip"><span class="pip" style="background:var(--accent)"></span>3 yrs data</span>
+        </div>
+        <ul>
+          <li>Designed a forecasting system over 3 years / 50,000+ transactions of historical sales data to predict revenue trends and support planning decisions.</li>
+          <li>Cut data inconsistencies by <strong style="color:var(--accent)">40%</strong> during cleaning; achieved MAE within <strong style="color:var(--accent)">5%</strong> of actual revenue with time-series and regression models.</li>
+          <li>Built Tableau dashboards surfacing KPIs, monthly growth trends, and region-wise performance.</li>
+        </ul>
+        <div class="stack">
+          <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">Tableau</span><span class="chip">Time-Series</span><span class="chip">Regression</span>
+        </div>
+      </div>
+
+      <div class="project reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="mono text-xs text-[color:var(--accent-2)]">P-02 · CLASSIFICATION</div>
+            <h3>Customer Churn Prediction System</h3>
+          </div>
+          <span class="chip"><span class="pip" style="background:var(--accent-2)"></span>7K records</span>
+        </div>
+        <ul>
+          <li>Built an end-to-end pipeline to identify churn drivers on a 7,000+ record telecom/banking dataset.</li>
+          <li>Cut dataset noise by ~30% through cleaning &amp; feature engineering; benchmarked Logistic Regression, Random Forest, and XGBoost.</li>
+          <li>Reached <strong style="color:var(--accent)">89% accuracy</strong> and <strong style="color:var(--accent)">0.91 ROC-AUC</strong> with the best model.</li>
+        </ul>
+        <div class="stack">
+          <span class="chip">Python</span><span class="chip">scikit-learn</span><span class="chip">XGBoost</span><span class="chip">SQL</span><span class="chip">ROC-AUC</span>
+        </div>
+      </div>
+
+      <div class="project reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="mono text-xs text-[color:var(--accent-3)]">P-03 · REGRESSION</div>
+            <h3>House Price Prediction &amp; Market Analysis</h3>
+          </div>
+          <span class="chip"><span class="pip" style="background:var(--accent-3)"></span>10K records</span>
+        </div>
+        <ul>
+          <li>Analyzed 10,000+ property records to model residential price drivers by location, area, and amenities.</li>
+          <li>Improved <strong style="color:var(--accent)">RMSE by 18%</strong> over a baseline linear model via feature scaling and log-transformation.</li>
+          <li>Delivered interactive Tableau dashboards of price trends and regional comparisons for non-technical stakeholders.</li>
+        </ul>
+        <div class="stack">
+          <span class="chip">Python</span><span class="chip">scikit-learn</span><span class="chip">Tableau</span><span class="chip">Gradient Boosting</span>
+        </div>
+      </div>
+
+      <div class="project reveal">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="mono text-xs text-[color:var(--accent-4)]">P-04 · EDA</div>
+            <h3>Exploratory Data Analysis Portfolio</h3>
+          </div>
+          <span class="chip"><span class="pip" style="background:var(--accent-4)"></span>reproducible</span>
+        </div>
+        <ul>
+          <li>End-to-end EDA on a real-world public dataset — cleaning, missing-value treatment, outlier detection, and statistical summarization.</li>
+          <li>Uncovered non-obvious patterns via correlation heatmaps and trend analyses.</li>
+          <li>Published a fully reproducible, documented analysis on GitHub.</li>
+        </ul>
+        <div class="stack">
+          <span class="chip">Pandas</span><span class="chip">Matplotlib</span><span class="chip">Seaborn</span><span class="chip">Statistics</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE / EDUCATION / CERTS -->
+<section id="experience" class="relative z-10 py-20 px-5">
+  <div class="max-w-6xl mx-auto">
+    <div class="section-head reveal">
+      <span class="num">04 —</span>
+      <h2>Education &amp; Timeline <span class="mono text-base text-[color:var(--muted)]">/ timeline.log</span></h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+
+      <!-- Education -->
+      <div class="window reveal">
+        <div class="titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">education.csv</span>
+        </div>
+        <div class="p-5 space-y-5">
+          <div class="border-l-2 border-[color:var(--accent)] pl-4">
+            <div class="mono text-xs text-[color:var(--accent)]">2024 — 2027 · Final Year</div>
+            <div class="font-semibold mt-1">B.Tech, AI &amp; Data Science</div>
+            <div class="text-sm text-[color:var(--muted)]">CGC University, Mohali</div>
+            <div class="text-xs text-[color:var(--dim)] mt-1">Relevant coursework: ML, Statistics, DBMS, DSA</div>
+          </div>
+          <div class="border-l-2 border-[color:var(--accent-2)] pl-4">
+            <div class="mono text-xs text-[color:var(--accent-2)]">2023</div>
+            <div class="font-semibold mt-1">Senior Secondary (XII) — CBSE</div>
+            <div class="text-sm text-[color:var(--muted)]">Hamirpur Public School, HP</div>
+          </div>
+          <div class="border-l-2 border-[color:var(--accent-3)] pl-4">
+            <div class="mono text-xs text-[color:var(--accent-3)]">2021</div>
+            <div class="font-semibold mt-1">Secondary (X) — CBSE</div>
+            <div class="text-sm text-[color:var(--muted)]">Hamirpur Public School, HP</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Certifications -->
+      <div class="window reveal">
+        <div class="titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">certifications.json</span>
+        </div>
+        <div class="p-5 space-y-4">
+          <div>
+            <div class="font-semibold text-sm">Deep Learning Specialization</div>
+            <div class="text-xs text-[color:var(--muted)]">Coursera · DeepLearning.AI (Andrew Ng)</div>
+          </div>
+          <div>
+            <div class="font-semibold text-sm">AWS Academy — Generative AI Foundations</div>
+            <div class="text-xs text-[color:var(--muted)]">Amazon Web Services</div>
+          </div>
+          <div>
+            <div class="font-semibold text-sm">End-to-End AI Project Development &amp; Deployment</div>
+            <div class="text-xs text-[color:var(--muted)]">Bootcamp</div>
+          </div>
+
+          <div class="mt-4 pt-4 border-t border-[color:var(--border)]">
+            <div class="mono text-xs text-[color:var(--accent)] mb-2">// achievements</div>
+            <ul class="text-sm text-[color:var(--muted)] space-y-2 list-disc pl-4">
+              <li>Led team through <span class="text-[color:var(--text)]">Smart India Hackathon</span> internal round; shortlisted at college level out of 30+ teams.</li>
+              <li>Multiple hackathon participant — delivered working prototypes under time pressure.</li>
+              <li>Attended ML &amp; Data Analytics workshops, applying learnings to academic projects.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity timeline -->
+      <div class="window reveal">
+        <div class="titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">activity.log — git log --oneline</span>
+        </div>
+        <div class="p-5 mono text-xs space-y-3">
+          <div><span class="text-[color:var(--accent)]">commit a1b2c3d</span> <span class="text-[color:var(--muted)]">(HEAD -&gt; main)</span></div>
+          <div class="text-[color:var(--muted)] pl-4">feat: shipped churn model · 0.91 ROC-AUC</div>
+          <div><span class="text-[color:var(--accent)]">commit 9e8f7d6</span></div>
+          <div class="text-[color:var(--muted)] pl-4">feat: sales forecast dashboard deployed</div>
+          <div><span class="text-[color:var(--accent)]">commit 4c5b6a7</span></div>
+          <div class="text-[color:var(--muted)] pl-4">refactor: data cleaning pipeline (-40% noise)</div>
+          <div><span class="text-[color:var(--accent)]">commit 2d3e4f5</span></div>
+          <div class="text-[color:var(--muted)] pl-4">feat: EDA portfolio published on GitHub</div>
+          <div><span class="text-[color:var(--accent)]">commit 0a1b2c3</span></div>
+          <div class="text-[color:var(--muted)] pl-4">init: started B.Tech AI &amp; DS @ CGC University</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="relative z-10 py-20 px-5">
+  <div class="max-w-5xl mx-auto">
+    <div class="section-head reveal">
+      <span class="num">05 —</span>
+      <h2>Contact <span class="mono text-base text-[color:var(--muted)]">/ INSERT INTO network</span></h2>
+      <span class="line"></span>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+      
+      <!-- Left Side: Info -->
+      <div class="window reveal">
+        <div class="titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">contact_details.json</span>
+        </div>
+        <div class="p-6 md:p-8">
+          <p class="text-lg text-[color:var(--muted)] mb-8">
+            Open to <span class="text-[color:var(--accent)]">full-time Data Analyst / Data Scientist</span> roles.
+            Let's talk data, dashboards, or messy datasets — I'll bring the cleaning pipeline.
+          </p>
+
+          <div class="space-y-4">
+            <a href="mailto:pathaniaaryan169@gmail.com" class="block stat hover:border-[color:var(--accent)] transition">
+              <div class="l">EMAIL</div>
+              <div class="mono text-sm text-[color:var(--text)] mt-1 break-all">pathaniaaryan169@gmail.com</div>
+            </a>
+            <a href="tel:+919317418192" class="block stat hover:border-[color:var(--accent)] transition">
+              <div class="l">PHONE</div>
+              <div class="mono text-sm text-[color:var(--text)] mt-1">+91 93174 18192</div>
+            </a>
+            <a href="https://github.com/" target="_blank" rel="noopener" class="block stat hover:border-[color:var(--accent)] transition">
+              <div class="l">GITHUB</div>
+              <div class="mono text-sm text-[color:var(--text)] mt-1">github.com/aryanpathania</div>
+            </a>
+            <a href="https://linkedin.com/" target="_blank" rel="noopener" class="block stat hover:border-[color:var(--accent)] transition">
+              <div class="l">LINKEDIN</div>
+              <div class="mono text-sm text-[color:var(--text)] mt-1">linkedin.com/in/aryanpathania</div>
+            </a>
+          </div>
+
+          <!-- ADDED PDF DOWNLOAD BUTTON HERE TOO -->
+          <div class="mt-8 no-print">
+            <a href="Aryan_Pathania_Resume_DataAnalyst_DataScientist.pdf" download class="btn btn-primary w-full justify-center">⤓ Download Formal Resume (PDF)</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side: Form -->
+      <div class="window reveal">
+        <div class="titlebar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">send_message.php</span>
+        </div>
+        <div class="query-bar no-print">
+          <span style="color:var(--accent)">POST</span>
+          <span style="color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">/api/v1/contact — payload: { name, email, message }</span>
+        </div>
+        <div class="p-6 md:p-8">
+          <form id="contact-form">
+            <div class="form-group">
+              <label class="form-label" for="name">// Name</label>
+              <input type="text" id="name" name="name" class="form-input" required placeholder="Jane Doe">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">// Email</label>
+              <input type="email" id="email" name="email" class="form-input" required placeholder="jane@company.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="message">// Message</label>
+              <textarea id="message" name="message" class="form-textarea" required placeholder="Hey Aryan, we have a data problem we'd love your help with..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-full justify-center">⟶ Execute Send</button>
+            <div id="form-status" class="form-status"></div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="relative z-10 border-t border-[color:var(--border)] py-8 px-5">
+  <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs mono text-[color:var(--dim)]">
+    <div>© <span id="year"></span> Aryan Pathania · Built with SQL, Python &amp; a lot of ☕</div>
+    <div>query executed in 0.012s · 4 rows · no errors</div>
+  </div>
+</footer>
+
+<script>
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------- Theme Toggle ---------- */
+  const themeToggle = document.getElementById('theme-toggle');
+  const htmlEl = document.documentElement;
+
+  if (localStorage.getItem('theme') === 'light') {
+    htmlEl.classList.add('light');
+    themeToggle.textContent = '☀️';
+  }
+
+  themeToggle.addEventListener('click', () => {
+    htmlEl.classList.toggle('light');
+    const isLight = htmlEl.classList.contains('light');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    themeToggle.textContent = isLight ? '☀️' : '🌙';
+    updateChartTheme(isLight);
+  });
+
+  /* ---------- Safe DOM helpers ---------- */
+  const $ = (s, c=document) => c.querySelector(s);
+  const $$ = (s, c=document) => Array.from(c.querySelectorAll(s));
+
+  /* ---------- Reveal on scroll (Safari Failsafe Included) ---------- */
+  const reveals = $$('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { 
+      if (e.isIntersecting){ 
+        e.target.classList.add('in'); 
+        io.unobserve(e.target); 
+      } 
+    });
+  }, { threshold: 0.01, rootMargin: "0px 0px -50px 0px" });
+  
+  reveals.forEach(el => io.observe(el));
+
+  // Safari Failsafe
+  setTimeout(() => {
+    reveals.forEach(el => {
+      if (!el.classList.contains('in')) {
+        el.classList.add('in');
+      }
+    });
+  }, 1500);
+
+  /* ---------- Nav active state ---------- */
+  const navLinks = $$('.nav a');
+  const sections = ['hero','about','skills','projects','experience','contact'].map(id => document.getElementById(id));
+  const navObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        const id = e.target.id;
+        navLinks.forEach(a => a.classList.toggle('active', a.dataset.sec === id));
+      }
+    });
+  }, { threshold: 0.4 });
+  sections.forEach(s => s && navObs.observe(s));
+
+  /* ---------- Terminal typing ---------- */
+  const terminal = $('#terminal');
+  const rerunBtn = $('#rerun-btn');
+
+  const RESUME_QUERY = `-- Let's pull the candidate profile
+SELECT
+    name,
+    role,
+    location,
+    skills,
+    projects_count,
+    open_to_work
+FROM developers
+WHERE name = 'Aryan Pathania'
+  AND status = 'open_to_work'
+LIMIT 1;`;
+
+  const RESULT_ROWS = [
+    ['name',           'Aryan Pathania'],
+    ['role',           'Data Analyst | Data Scientist'],
+    ['location',       'Chandigarh, India'],
+    ['education',      'B.Tech AI & DS · CGC University'],
+    ['skills',         'Python, SQL, Excel, Tableau, ML'],
+    ['projects',       '4 shipped · 50K+ rows processed'],
+    ['status',         'open_to_work = TRUE'],
+  ];
+
+  function highlightSQL(sql){
+    const kws = ['SELECT','FROM','WHERE','AND','LIMIT','TRUE','FALSE','AS','ORDER BY','GROUP BY','BY'];
+    let out = sql
+      .replace(/(--[^\n]*)/g, '<span class="com">$1</span>')
+      .replace(/'([^']*)'/g, '<span class="str">\'$1\'</span>')
+      .replace(/\b(\d+)\b/g, '<span class="num">$1</span>');
+    kws.forEach(k => {
+      out = out.replace(new RegExp('\\b'+k+'\\b','g'), `<span class="kw">${k}</span>`);
+    });
+    return out;
+  }
+
+  let typingTimer = null;
+  function typeText(text, target, speed=18, onDone){
+    clearTimeout(typingTimer);
+    target.innerHTML = '';
+    let i = 0;
+    function step(){
+      if (i >= text.length){ onDone && onDone(); return; }
+      i++;
+      target.innerHTML = highlightSQL(text.slice(0, i)) + '<span class="cursor"></span>';
+      typingTimer = setTimeout(step, speed);
+    }
+    step();
+  }
+
+  function renderResults(){
+    let html = '<div style="margin-top:14px; border-top:1px dashed var(--border); padding-top:14px;">';
+    html += '<div class="com" style="margin-bottom:10px;">-- 1 row in set (0.00 sec)</div>';
+    html += '<div style="display:grid; grid-template-columns: 160px 1fr; gap:6px 18px; word-break: break-word;">';
+    RESULT_ROWS.forEach(([k,v]) => {
+      html += `<div style="color:var(--accent);">${k}</div>`;
+      html += `<div style="color:var(--text);">${v}</div>`;
+    });
+    html += '</div></div>';
+    terminal.innerHTML += html;
+  }
+
+  function runTerminal(){
+    typeText(RESUME_QUERY, terminal, 16, () => {
+      terminal.innerHTML = highlightSQL(RESUME_QUERY);
+      setTimeout(renderResults, 300);
+    });
+  }
+
+  function startTerminalOnce(){
+    if (terminal.dataset.started) return;
+    terminal.dataset.started = '1';
+    runTerminal();
+  }
+  
+  const termObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting){ startTerminalOnce(); termObs.disconnect(); } });
+  }, { threshold: 0.1 });
+  termObs.observe(terminal);
+
+  // Safari Failsafe for terminal
+  setTimeout(() => {
+    if (!terminal.dataset.started) {
+      startTerminalOnce();
+    }
+  }, 2000);
+
+  rerunBtn && rerunBtn.addEventListener('click', () => {
+    terminal.dataset.started = '1';
+    terminal.innerHTML = '';
+    runTerminal();
+  });
+
+  /* ---------- Skills sheet ---------- */
+  const SKILLS = [
+    { cat: 'Languages & Tools',     tools: 'Python, SQL, MySQL, Excel, Pandas, NumPy, Git, Jupyter', level: 92 },
+    { cat: 'Data Analysis & Stats', tools: 'EDA, Cleaning, Statistics, Feature Engineering, Forecasting', level: 88 },
+    { cat: 'Machine Learning',      tools: 'scikit-learn, XGBoost, Regression, Classification, ROC-AUC', level: 85 },
+    { cat: 'BI & Visualization',    tools: 'Tableau, Power BI (in progress), Matplotlib, Seaborn', level: 82 },
+    { cat: 'Foundations',           tools: 'DBMS, DSA, OOP', level: 80 },
+  ];
+
+  const sheet = $('#skills-sheet');
+  SKILLS.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.className = 'skills-row text-sm';
+    row.innerHTML = `
+      <div class="hide-on-mobile mono text-xs text-[color:var(--dim)]">${i+1}</div>
+      <div class="text-[color:var(--text)] font-medium">
+        <span class="sm:hidden mono text-xs text-[color:var(--accent)] block mb-1">A · CATEGORY</span>
+        ${s.cat}
+      </div>
+      <div class="text-[color:var(--muted)] mono text-xs">
+        <span class="sm:hidden mono text-xs text-[color:var(--accent)] block mb-1">B · TOOLS / SKILLS</span>
+        ${s.tools}
+      </div>
+      <div>
+        <span class="sm:hidden mono text-xs text-[color:var(--accent)] block mb-2">C · LEVEL</span>
+        <div class="flex items-center gap-2">
+          <div style="flex:1; height:6px; background:var(--bg-2); border-radius:3px; overflow:hidden;">
+            <i data-w="${s.level}" style="display:block; height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-2)); width:0%; transition: width 1.2s cubic-bezier(.2,.7,.3,1);"></i>
+          </div>
+          <span class="mono text-xs text-[color:var(--accent)]">${s.level}</span>
+        </div>
+      </div>`;
+    sheet.appendChild(row);
+  });
+
+  const barObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        const i = e.target.querySelector('i[data-w]');
+        if (i){ i.style.width = i.dataset.w + '%'; }
+        barObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  $$('#skills-sheet .skills-row').forEach(d => barObs.observe(d));
+
+  /* ---------- Charts ---------- */
+  let radarInstance, barInstance, doughnutInstance;
+
+  function getChartColors() {
+    const isLight = htmlEl.classList.contains('light');
+    return {
+      grid: isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)',
+      ticks: isLight ? '#475569' : '#8b9bb8',
+      pointLabels: isLight ? '#475569' : '#8b9bb8',
+      borderColor: isLight ? '#ffffff' : '#131a28'
+    };
+  }
+
+  function buildCharts() {
+    if (!window.Chart) return;
+    const colors = getChartColors();
+
+    radarInstance = new Chart($('#radarChart'), {
+      type: 'radar',
+      data: {
+        labels: ['Python','SQL','Excel','ML','BI/Tableau','Statistics'],
+        datasets: [{
+          label: 'Proficiency',
+          data: [92, 90, 88, 85, 82, 86],
+          backgroundColor: 'rgba(74,222,128,0.18)',
+          borderColor: 'rgba(74,222,128,0.9)',
+          pointBackgroundColor: 'rgba(74,222,128,1)',
+          pointBorderColor: '#0b0f17',
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          r: {
+            beginAtZero: true, max: 100,
+            angleLines: { color: colors.grid },
+            grid: { color: colors.grid },
+            pointLabels: { color: colors.pointLabels, font: { family: 'JetBrains Mono', size: 11 } },
+            ticks: { display: false, stepSize: 25 }
+          }
+        }
+      }
+    });
+
+    barInstance = new Chart($('#barChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Python','SQL','Excel','Tableau','scikit-learn','XGBoost','Pandas'],
+        datasets: [{
+          label: 'Proficiency %',
+          data: [92, 90, 88, 82, 85, 83, 90],
+          backgroundColor: ['#4ade80','#22d3ee','#f59e0b','#a78bfa','#4ade80','#22d3ee','#f59e0b'],
+          borderRadius: 6,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: colors.ticks, font: { family:'JetBrains Mono', size:10 } }, grid: { display:false } },
+          y: { beginAtZero:true, max:100, ticks: { color: colors.ticks, font:{ family: 'JetBrains Mono', size:10 } }, grid: { color: colors.grid } }
+        }
+      }
+    });
+
+    doughnutInstance = new Chart($('#doughnutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Data Analysis','Machine Learning','BI / Viz','Foundations'],
+        datasets: [{
+          data: [35, 28, 22, 15],
+          backgroundColor: ['#4ade80','#22d3ee','#a78bfa','#f59e0b'],
+          borderColor: colors.borderColor,
+          borderWidth: 3,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '62%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: colors.ticks, font:{ family:'JetBrains Mono', size:11 }, boxWidth:10, padding:14 }
+          }
+        }
+      }
+    });
+  }
+
+  function updateChartTheme(isLight) {
+    if (!window.Chart) return;
+    const colors = getChartColors();
+    
+    if (radarInstance) {
+      radarInstance.options.scales.r.angleLines.color = colors.grid;
+      radarInstance.options.scales.r.grid.color = colors.grid;
+      radarInstance.options.scales.r.pointLabels.color = colors.pointLabels;
+      radarInstance.update();
+    }
+    if (barInstance) {
+      barInstance.options.scales.x.ticks.color = colors.ticks;
+      barInstance.options.scales.y.ticks.color = colors.ticks;
+      barInstance.options.scales.y.grid.color = colors.grid;
+      barInstance.update();
+    }
+    if (doughnutInstance) {
+      doughnutInstance.options.plugins.legend.labels.color = colors.ticks;
+      doughnutInstance.data.datasets[0].borderColor = colors.borderColor;
+      doughnutInstance.update();
+    }
+  }
+
+  if (window.Chart) {
+    try { buildCharts(); } catch(e) { console.warn(e); }
+  }
+
+  /* ---------- Project row click ---------- */
+  $$('.project-row').forEach(row => {
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', () => {
+      const id = row.dataset.id;
+      const card = $$('.project')[parseInt(id,10)-1];
+      if (card){
+        card.scrollIntoView({ behavior:'smooth', block:'center' });
+        card.style.outline = '2px solid var(--accent)';
+        setTimeout(() => card.style.outline = 'none', 1500);
+      }
+    });
+  });
+
+  /* ---------- Native Mailto Contact Form ---------- */
+  const form = $('#contact-form');
+  const status = $('#form-status');
+  const YOUR_EMAIL = "pathaniaaryan169@gmail.com";
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = $('#name').value;
+    const email = $('#email').value;
+    const message = $('#message').value;
+
+    const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+    
+    window.location.href = `mailto:${YOUR_EMAIL}?subject=${subject}&body=${body}`;
+
+    status.className = 'form-status success';
+    status.textContent = '✓ Opening your email client... If it didn\'t open, please email me directly at ' + YOUR_EMAIL;
+  });
+
+  /* ---------- Smooth scroll ---------- */
+  $$('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el){ e.preventDefault(); el.scrollIntoView({ behavior:'smooth', block:'start' }); }
+    });
+  });
+</script>
+
+</body>
+</html>
