@@ -707,11 +707,11 @@
             </tr>
             <tr class="project-row" data-id="2">
               <td style="color:var(--accent)">P-02</td>
-              <td><strong>Customer Churn Prediction</strong></td>
-              <td>Python · scikit-learn · XGBoost</td>
+              <td><strong>Customer Churn Prediction API</strong></td>
+              <td>Python · scikit-learn · FastAPI</td>
               <td>7,000+ records</td>
               <td>89% acc · 0.91 AUC</td>
-              <td>Churn-driver identification</td>
+              <td>Retention strategy API</td>
             </tr>
             <tr class="project-row" data-id="3">
               <td style="color:var(--accent)">P-03</td>
@@ -789,21 +789,64 @@
         </div>
       </div>
 
-      <div class="project reveal">
-        <div class="flex items-start justify-between gap-4">
+      <!-- P-02: FastAPI Customer Churn -->
+      <div class="project reveal md:col-span-2">
+        <div class="flex items-start justify-between gap-4 mb-4">
           <div>
-            <div class="mono text-xs text-[color:var(--accent-2)]">P-02 · CLASSIFICATION</div>
-            <h3>Customer Churn Prediction System</h3>
+            <div class="mono text-xs text-[color:var(--accent-2)]">P-02 · CLASSIFICATION &amp; API</div>
+            <h3>Customer Churn Prediction API</h3>
           </div>
-          <span class="chip"><span class="pip" style="background:var(--accent-2)"></span>7K records</span>
+          <span class="chip"><span class="pip" style="background:var(--accent-2)"></span>FastAPI</span>
         </div>
-        <ul>
-          <li>Built an end-to-end pipeline to identify churn drivers on a 7,000+ record telecom/banking dataset.</li>
-          <li>Cut dataset noise by ~30% through cleaning &amp; feature engineering; benchmarked Logistic Regression, Random Forest, and XGBoost.</li>
-          <li>Reached <strong style="color:var(--accent)">89% accuracy</strong> and <strong style="color:var(--accent)">0.91 ROC-AUC</strong> with the best model.</li>
-        </ul>
-        <div class="stack">
-          <span class="chip">Python</span><span class="chip">scikit-learn</span><span class="chip">XGBoost</span><span class="chip">SQL</span><span class="chip">ROC-AUC</span>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="flex flex-col">
+            <ul>
+              <li>Built an end-to-end pipeline to identify churn drivers on a 7,000+ record telecom dataset.</li>
+              <li>Cut dataset noise by ~30% through cleaning &amp; feature engineering; benchmarked XGBoost (89% accuracy, 0.91 ROC-AUC).</li>
+              <li>Deployed the model as a REST API using FastAPI, returning churn probabilities and automated retention strategies.</li>
+            </ul>
+            <div class="stack mt-4">
+              <span class="chip">Python</span><span class="chip">FastAPI</span><span class="chip">XGBoost</span><span class="chip">scikit-learn</span><span class="chip">REST</span>
+            </div>
+
+            <div class="mt-auto pt-6 flex flex-wrap gap-3">
+              <a href="https://ar3miss-churn-api.onrender.com/docs" target="_blank" rel="noopener" class="btn btn-primary">
+                ⟶ Test Live API (Swagger)
+              </a>
+              <a href="https://github.com/Ar3missss/Customer-Churn-Prediction-System" target="_blank" rel="noopener" class="btn btn-ghost">
+                ⌥ View Source Code
+              </a>
+            </div>
+          </div>
+
+          <!-- Interactive API Terminal -->
+          <div class="window">
+            <div class="titlebar">
+              <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+              <span class="title">POST /predict — API Console</span>
+            </div>
+            <div class="p-4 bg-[color:var(--bg-2)]">
+              <pre class="mono text-xs text-[color:var(--muted)] overflow-x-auto"><code><span class="text-[color:var(--accent-3)]">$</span> curl -X POST https://ar3miss-churn-api.onrender.com/predict \
+  -H <span class="text-[color:var(--accent)]">"Content-Type: application/json"</span> \
+  -d <span class="text-[color:var(--accent-2)]">'{
+    "tenure": 2,
+    "MonthlyCharges": 85.5,
+    "TotalCharges": 150.0,
+    "Contract": "Month-to-month",
+    "InternetService": "Fiber optic",
+    "TechSupport": "No"
+  }'</code></pre>
+              <div class="mt-4 p-3 bg-[color:var(--panel)] border border-[color:var(--border)] rounded text-xs mono text-[color:var(--accent)]">
+                <span class="text-[color:var(--muted)]">// Response:</span><br/>
+                {<br/>
+                &nbsp;&nbsp;<span class="text-[color:var(--accent-2)]">"churn_probability"</span>: 87.5,<br/>
+                &nbsp;&nbsp;<span class="text-[color:var(--accent-2)]">"risk_level"</span>: <span class="text-[color:var(--danger)]">"High Risk"</span>,<br/>
+                &nbsp;&nbsp;<span class="text-[color:var(--accent-2)]">"recommended_strategy"</span>: <span class="text-[color:var(--text)]">"Offer 20% discount..."</span><br/>
+                }
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -825,7 +868,7 @@
         </div>
       </div>
 
-      <div class="project reveal md:col-span-2">
+      <div class="project reveal">
         <div class="flex items-start justify-between gap-4">
           <div>
             <div class="mono text-xs text-[color:var(--accent-4)]">P-04 · EDA</div>
@@ -923,7 +966,7 @@
         </div>
         <div class="p-5 mono text-xs space-y-3">
           <div><span class="text-[color:var(--accent)]">commit a1b2c3d</span> <span class="text-[color:var(--muted)]">(HEAD -&gt; main)</span></div>
-          <div class="text-[color:var(--muted)] pl-4">feat: shipped churn model · 0.91 ROC-AUC</div>
+          <div class="text-[color:var(--muted)] pl-4">feat: shipped churn API · FastAPI deployed</div>
           <div><span class="text-[color:var(--accent)]">commit 9e8f7d6</span></div>
           <div class="text-[color:var(--muted)] pl-4">feat: sales forecast dashboard deployed</div>
           <div><span class="text-[color:var(--accent)]">commit 4c5b6a7</span></div>
@@ -931,7 +974,7 @@
           <div><span class="text-[color:var(--accent)]">commit 2d3e4f5</span></div>
           <div class="text-[color:var(--muted)] pl-4">feat: EDA portfolio published on GitHub</div>
           <div><span class="text-[color:var(--accent)]">commit 0a1b2c3</span></div>
-          <div class="text-[color:var(--muted)] pl-4">init: started B.Tech AI &amp; DS @ I.K. Gujral Punjab Technical University (IKGPTU)</div>
+          <div class="text-[color:var(--muted)] pl-4">init: started B.Tech AI &amp; DS @ IKGPTU</div>
         </div>
       </div>
 
@@ -1110,7 +1153,7 @@ LIMIT 1;`;
     ['name',           'Aryan Pathania'],
     ['role',           'Data Analyst | Data Scientist'],
     ['location',       'Chandigarh, India'],
-    ['education',      'B.Tech AI & DS · I.K. Gujral Punjab Technical University (IKGPTU)'],
+    ['education',      'B.Tech AI & DS · IKGPTU'],
     ['skills',         'Python, SQL, Excel, Tableau, ML'],
     ['projects',       '4 shipped · 50K+ rows processed'],
     ['status',         'open_to_work = TRUE'],
