@@ -747,19 +747,31 @@
           <span class="chip"><span class="pip" style="background:var(--accent)"></span>Live App</span>
         </div>
         <div class="grid md:grid-cols-2 gap-6">
-          <div>
+          
+          <!-- LEFT COLUMN: Text and Buttons -->
+          <div class="flex flex-col">
             <ul>
               <li>Designed a forecasting system over 3 years / 50,000+ transactions of historical sales data to predict revenue trends and support planning decisions.</li>
               <li>Cut data inconsistencies by <strong style="color:var(--accent)">40%</strong> during cleaning; achieved MAE within <strong style="color:var(--accent)">5%</strong> of actual revenue with time-series and regression models.</li>
               <li>Built Tableau dashboards surfacing KPIs, monthly growth trends, and region-wise performance.</li>
-              <li>Deployed the predictive model as a live, interactive web application using Streamlit (embedded below).</li>
+              <li>Deployed the predictive model as a live, interactive web application using Streamlit (embedded right).</li>
             </ul>
             <div class="stack mt-4">
               <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">Tableau</span><span class="chip">Streamlit</span><span class="chip">Time-Series</span><span class="chip">Regression</span>
             </div>
+            
+            <!-- Action Buttons to fill the empty space -->
+            <div class="mt-auto pt-6 flex flex-wrap gap-3">
+              <a href="https://sales-forecasting-2ywsdx46v4o5nimzubkgvs.streamlit.app/" target="_blank" rel="noopener" class="btn btn-primary">
+                ⟶ Open Live App
+              </a>
+              <a href="https://github.com/Ar3missss/Sales-Forecasting" target="_blank" rel="noopener" class="btn btn-ghost">
+                ⌥ View Source Code
+              </a>
+            </div>
           </div>
           
-          <!-- Terminal-styled Iframe for P-01 -->
+          <!-- RIGHT COLUMN: Terminal-styled Iframe -->
           <div class="window">
             <div class="titlebar">
               <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
@@ -767,7 +779,7 @@
             </div>
             <iframe 
               src="https://sales-forecasting-2ywsdx46v4o5nimzubkgvs.streamlit.app/?embedded=true" 
-              height="420" 
+              height="480" 
               width="100%" 
               style="border:none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;"
               loading="lazy"
@@ -1173,7 +1185,7 @@ LIMIT 1;`;
     runTerminal();
   });
 
-  /* ---------- Skills sheet ---------- */
+  /* ---------- Skills sheet (Clean Text Badges) ---------- */
   const SKILLS = [
     { cat: 'Languages & Tools',     tools: 'Python, SQL, MySQL, Excel, Pandas, NumPy, Git, Jupyter', level: 'Advanced' },
     { cat: 'Data Analysis & Stats', tools: 'EDA, Cleaning, Statistics, Feature Engineering, Forecasting', level: 'Proficient' },
@@ -1181,13 +1193,6 @@ LIMIT 1;`;
     { cat: 'BI & Visualization',    tools: 'Tableau, Power BI (in progress), Matplotlib, Seaborn', level: 'Intermediate' },
     { cat: 'Foundations',           tools: 'DBMS, DSA, OOP', level: 'Proficient' },
   ];
-
-  const levelToWidth = {
-    'Advanced': '100%',
-    'Proficient': '88%',
-    'Intermediate': '72%',
-    'Beginner': '50%'
-  };
 
   const sheet = $('#skills-sheet');
   SKILLS.forEach((s, i) => {
@@ -1205,26 +1210,12 @@ LIMIT 1;`;
       </div>
       <div>
         <span class="sm:hidden mono text-xs text-[color:var(--accent)] block mb-2">C · LEVEL</span>
-        <div class="flex items-center gap-2">
-          <div style="flex:1; height:6px; background:var(--bg-2); border-radius:3px; overflow:hidden;">
-            <i data-w="${levelToWidth[s.level] || '80%'}" style="display:block; height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-2)); width:0%; transition: width 1.2s cubic-bezier(.2,.7,.3,1);"></i>
-          </div>
-          <span class="mono text-xs text-[color:var(--accent)] whitespace-nowrap">${s.level}</span>
+        <div class="flex items-center">
+          <span class="chip" style="color: var(--accent); border-color: var(--accent); background: rgba(74,222,128,0.1);">${s.level}</span>
         </div>
       </div>`;
     sheet.appendChild(row);
   });
-
-  const barObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting){
-        const i = e.target.querySelector('i[data-w]');
-        if (i){ i.style.width = i.dataset.w; }
-        barObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  $$('#skills-sheet .skills-row').forEach(d => barObs.observe(d));
 
   /* ---------- Charts ---------- */
   let radarInstance, barInstance, doughnutInstance;
