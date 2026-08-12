@@ -136,15 +136,15 @@
     padding: 20px 22px;
     color: var(--text);
     min-height: 240px;
-    word-break: break-word; /* Fixes Safari overflow */
-    white-space: pre-wrap;  /* Ensures text wraps */
+    word-break: break-word;
+    white-space: pre-wrap;
   }
-  .kw{ color:#ff79c6; }      /* keyword pink */
-  .fn{ color:#50fa7b; }      /* function green */
-  .str{ color:#f1fa8c; }     /* string yellow */
+  .kw{ color:#ff79c6; }
+  .fn{ color:#50fa7b; }
+  .str{ color:#f1fa8c; }
   .com{ color:var(--dim); font-style:italic; }
-  .id{ color:#8be9fd; }      /* identifier cyan */
-  .num{ color:#bd93f9; }     /* number purple */
+  .id{ color:#8be9fd; }
+  .num{ color:#bd93f9; }
   html.light .kw { color: #d946ef; }
   html.light .str { color: #ca8a04; }
   html.light .num { color: #7c3aed; }
@@ -492,7 +492,6 @@
       <div class="mt-8 flex flex-wrap gap-3 no-print">
         <a href="#contact" class="btn btn-primary">⟶ Run Connection Query</a>
         <a href="#projects" class="btn btn-ghost">View Projects.sql</a>
-        <!-- ADDED PDF DOWNLOAD BUTTON HERE -->
         <a href="Aryan_Pathania_Resume_DataAnalyst_DataScientist.pdf" download class="btn btn-ghost">⤓ Download Resume (PDF)</a>
       </div>
 
@@ -738,21 +737,43 @@
     <!-- Project detail cards -->
     <div class="grid md:grid-cols-2 gap-6 mt-8">
 
-      <div class="project reveal">
-        <div class="flex items-start justify-between gap-4">
+      <!-- P-01: Live Streamlit Embed -->
+      <div class="project reveal md:col-span-2">
+        <div class="flex items-start justify-between gap-4 mb-4">
           <div>
-            <div class="mono text-xs text-[color:var(--accent)]">P-01 · FORECASTING</div>
+            <div class="mono text-xs text-[color:var(--accent)]">P-01 · FORECASTING &amp; DEPLOYMENT</div>
             <h3>Sales Forecasting &amp; Business Intelligence Dashboard</h3>
           </div>
-          <span class="chip"><span class="pip" style="background:var(--accent)"></span>3 yrs data</span>
+          <span class="chip"><span class="pip" style="background:var(--accent)"></span>Live App</span>
         </div>
-        <ul>
-          <li>Designed a forecasting system over 3 years / 50,000+ transactions of historical sales data to predict revenue trends and support planning decisions.</li>
-          <li>Cut data inconsistencies by <strong style="color:var(--accent)">40%</strong> during cleaning; achieved MAE within <strong style="color:var(--accent)">5%</strong> of actual revenue with time-series and regression models.</li>
-          <li>Built Tableau dashboards surfacing KPIs, monthly growth trends, and region-wise performance.</li>
-        </ul>
-        <div class="stack">
-          <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">Tableau</span><span class="chip">Time-Series</span><span class="chip">Regression</span>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <ul>
+              <li>Designed a forecasting system over 3 years / 50,000+ transactions of historical sales data to predict revenue trends and support planning decisions.</li>
+              <li>Cut data inconsistencies by <strong style="color:var(--accent)">40%</strong> during cleaning; achieved MAE within <strong style="color:var(--accent)">5%</strong> of actual revenue with time-series and regression models.</li>
+              <li>Built Tableau dashboards surfacing KPIs, monthly growth trends, and region-wise performance.</li>
+              <li>Deployed the predictive model as a live, interactive web application using Streamlit (embedded below).</li>
+            </ul>
+            <div class="stack mt-4">
+              <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">Tableau</span><span class="chip">Streamlit</span><span class="chip">Time-Series</span><span class="chip">Regression</span>
+            </div>
+          </div>
+          
+          <!-- Terminal-styled Iframe for P-01 -->
+          <div class="window">
+            <div class="titlebar">
+              <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+              <span class="title">streamlit run app.py</span>
+            </div>
+            <iframe 
+              src="https://sales-forecasting-hpsmn9tzvlabhysbodejmk.streamlit.app/?embedded=true" 
+              height="420" 
+              width="100%" 
+              style="border:none; border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;"
+              loading="lazy"
+              title="Sales Forecasting App">
+            </iframe>
+          </div>
         </div>
       </div>
 
@@ -792,7 +813,7 @@
         </div>
       </div>
 
-      <div class="project reveal">
+      <div class="project reveal md:col-span-2">
         <div class="flex items-start justify-between gap-4">
           <div>
             <div class="mono text-xs text-[color:var(--accent-4)]">P-04 · EDA</div>
@@ -948,7 +969,6 @@
             </a>
           </div>
 
-          <!-- ADDED PDF DOWNLOAD BUTTON HERE TOO -->
           <div class="mt-8 no-print">
             <a href="Aryan_Pathania_Resume_DataAnalyst_DataScientist.pdf" download class="btn btn-primary w-full justify-center">⤓ Download Formal Resume (PDF)</a>
           </div>
@@ -1155,12 +1175,19 @@ LIMIT 1;`;
 
   /* ---------- Skills sheet ---------- */
   const SKILLS = [
-    { cat: 'Languages & Tools',     tools: 'Python, SQL, MySQL, Excel, Pandas, NumPy, Git, Jupyter', level: 92 },
-    { cat: 'Data Analysis & Stats', tools: 'EDA, Cleaning, Statistics, Feature Engineering, Forecasting', level: 88 },
-    { cat: 'Machine Learning',      tools: 'scikit-learn, XGBoost, Regression, Classification, ROC-AUC', level: 85 },
-    { cat: 'BI & Visualization',    tools: 'Tableau, Power BI (in progress), Matplotlib, Seaborn', level: 82 },
-    { cat: 'Foundations',           tools: 'DBMS, DSA, OOP', level: 80 },
+    { cat: 'Languages & Tools',     tools: 'Python, SQL, MySQL, Excel, Pandas, NumPy, Git, Jupyter', level: 'Advanced' },
+    { cat: 'Data Analysis & Stats', tools: 'EDA, Cleaning, Statistics, Feature Engineering, Forecasting', level: 'Proficient' },
+    { cat: 'Machine Learning',      tools: 'scikit-learn, XGBoost, Regression, Classification, ROC-AUC', level: 'Proficient' },
+    { cat: 'BI & Visualization',    tools: 'Tableau, Power BI (in progress), Matplotlib, Seaborn', level: 'Intermediate' },
+    { cat: 'Foundations',           tools: 'DBMS, DSA, OOP', level: 'Proficient' },
   ];
+
+  const levelToWidth = {
+    'Advanced': '100%',
+    'Proficient': '80%',
+    'Intermediate': '60%',
+    'Beginner': '40%'
+  };
 
   const sheet = $('#skills-sheet');
   SKILLS.forEach((s, i) => {
@@ -1180,9 +1207,9 @@ LIMIT 1;`;
         <span class="sm:hidden mono text-xs text-[color:var(--accent)] block mb-2">C · LEVEL</span>
         <div class="flex items-center gap-2">
           <div style="flex:1; height:6px; background:var(--bg-2); border-radius:3px; overflow:hidden;">
-            <i data-w="${s.level}" style="display:block; height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-2)); width:0%; transition: width 1.2s cubic-bezier(.2,.7,.3,1);"></i>
+            <i data-w="${levelToWidth[s.level] || '80%'}" style="display:block; height:100%; background:linear-gradient(90deg, var(--accent), var(--accent-2)); width:0%; transition: width 1.2s cubic-bezier(.2,.7,.3,1);"></i>
           </div>
-          <span class="mono text-xs text-[color:var(--accent)]">${s.level}</span>
+          <span class="mono text-xs text-[color:var(--accent)] whitespace-nowrap">${s.level}</span>
         </div>
       </div>`;
     sheet.appendChild(row);
@@ -1192,7 +1219,7 @@ LIMIT 1;`;
     entries.forEach(e => {
       if (e.isIntersecting){
         const i = e.target.querySelector('i[data-w]');
-        if (i){ i.style.width = i.dataset.w + '%'; }
+        if (i){ i.style.width = i.dataset.w; }
         barObs.unobserve(e.target);
       }
     });
@@ -1261,7 +1288,21 @@ LIMIT 1;`;
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: { 
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) { label += ': '; }
+                if (context.parsed.y !== null) {
+                  label += context.parsed.y + '%';
+                }
+                return label;
+              }
+            }
+          }
+        },
         scales: {
           x: { ticks: { color: colors.ticks, font: { family:'JetBrains Mono', size:10 } }, grid: { display:false } },
           y: { beginAtZero:true, max:100, ticks: { color: colors.ticks, font:{ family: 'JetBrains Mono', size:10 } }, grid: { color: colors.grid } }
@@ -1287,7 +1328,14 @@ LIMIT 1;`;
         plugins: {
           legend: {
             position: 'bottom',
-            labels: { color: colors.ticks, font:{ family:'JetBrains Mono', size:11 }, boxWidth:10, padding:14 }
+            labels: { color: colors.ticks, font:{ family: 'JetBrains Mono', size:11 }, boxWidth:10, padding:14 }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.label;
+              }
+            }
           }
         }
       }
